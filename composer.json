@@ -1,0 +1,19 @@
+{
+    "name": "gnumast/pipeline",
+    "description": "Simple library to send data through a chain of tasks",
+    "authors": [
+        {
+            "name": "Alex Marcotte",
+            "email": "alex.marcotte@gmail.com"
+        }
+    ],
+    "require": {
+        "phpunit/phpunit": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gnumast\\": "src"
+        },
+        "classmap": ["tests"]
+    }
+}

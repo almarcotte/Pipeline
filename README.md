@@ -6,41 +6,47 @@ Pipeline allows to easily chain operations / tasks on the fly or create a reusab
 
 Here's a trivial example.
 
-    class MakeAllCaps implements TaskInterface {
-        public function run($data) {
-            return mb_strtoupper($data);
-        }
+```php
+class MakeAllCaps implements TaskInterface {
+    public function run($data) {
+        return mb_strtoupper($data);
     }
+}
 
-    class RemoveAllSpaces implements TaskInterface {
-        public function run($data) {
-            return str_replace(' ', '', $data);
-        }
+class RemoveAllSpaces implements TaskInterface {
+    public function run($data) {
+        return str_replace(' ', '', $data);
     }
+}
 
-    $pipeline = new Pipeline(
-        new MakeAllCaps(),
-        new RemoveAllSpaces()
-    );
-    $pipeline->execute("Hello, my name is Steve"); // HELLO,MYNAMEISSTEVE
+$pipeline = new Pipeline(
+    new MakeAllCaps(),
+    new RemoveAllSpaces()
+);
+$pipeline->execute("Hello, my name is Steve"); // HELLO,MYNAMEISSTEVE
+```
 
 For simple chains where defining a brand new class isn't really worth it, or if you quickly want to chain things
 together, the ``CallablePipe`` class wraps anonymous functions to be passed as pipes.
 
-    $pipeline = new Pipeline(
-        new CallablePipe(function($data) {
-    return $data * 10;
-        }),
-        new CallablePipe(function($data) {
-    return $data + 50;
-        })
-    );
+```php
+$pipeline = new Pipeline(
+    new CallablePipe(function($data) {
+return $data * 10;
+    }),
+    new CallablePipe(function($data) {
+return $data + 50;
+    })
+);
 
-    $result = $pipeline->execute(10); // 150
+$result = $pipeline->execute(10); // 150
+```
 
 You don't have to pass all of your tasks at initialisation time. ``Pipeline`` provides an ``add`` method to add steps
  to an existing object:
 
-    $pipeline = new Pipeline(new MakeAllCaps());
-    $pipeline->add(new RemoveAllSpaces());
-    $pipeline->execute("Hello, world!"); // HELLO,WORLD!
+```php
+$pipeline = new Pipeline(new MakeAllCaps());
+$pipeline->add(new RemoveAllSpaces());
+$pipeline->execute("Hello, world!"); // HELLO,WORLD!
+```
