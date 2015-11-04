@@ -1,8 +1,12 @@
 # Pipeline
 
-Pipeline allows to easily chain operations / tasks on the fly or create a reusable chain of commands.
+Pipeline allows to easily chain operations / tasks on the fly or create a reusable chain of commands. Complete [documentation](http://gnumast.github.io/Pipeline) is available.
 
-Complete [documentation](http://gnumast.github.io/Pipeline) is available.
+## Installation
+
+```
+composer require gnumast/pipeline
+```
 
 ## Basic usage
 
