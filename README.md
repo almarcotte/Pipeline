@@ -2,6 +2,8 @@
 
 Pipeline allows to easily chain operations / tasks on the fly or create a reusable chain of commands.
 
+Complete [documentation](http://gnumast.github.io/Pipeline) is available.
+
 ## Basic usage
 
 Here's a trivial example.
