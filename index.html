@@ -29,6 +29,80 @@
       </header>
       <section>
         <h2>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h2>
+
+<p>Pipeline allows the creation of reusable chains of tasks through which data can be processed. It is, in a way, an implementation of <a href="https://en.wikipedia.org/wiki/Function_composition">function composition</a>.</p>
+
+<p>It can be used to filter data using simple, self-contained rules, to apply multiple operations on data or to feed data to multiple processes in a row.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<h3>
+<a id="using-composer" class="anchor" href="#using-composer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using Composer</h3>
+
+<pre><code>composer require gnumast/pipeline
+</code></pre>
+
+<h3>
+<a id="manually" class="anchor" href="#manually" aria-hidden="true"><span class="octicon octicon-link"></span></a>Manually</h3>
+
+<p>Manual installation is not recommended but the library is simple enough that it isn't too complicated. Download an archive version using git:</p>
+
+<pre><code>git archive --format zip --output "pipeline.zip" https://github.com/gnumast/Pipeline.git -0
+</code></pre>
+
+<p>extract and copy the content of <code>src</code> into your own application. Alternatively, you can grab a zip on the <a href="https://github.com/gnumast/pipeline">Github</a> page for the project.</p>
+
+<h2>
+<a id="creating-tasks" class="anchor" href="#creating-tasks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating Tasks</h2>
+
+<p>There are 2 main ways of creating a task: implementing <code>TaskInterface</code> or using <code>CallableTask</code> as a wrapper to an anonymous function.</p>
+
+<h3>
+<a id="extending-taskinterface" class="anchor" href="#extending-taskinterface" aria-hidden="true"><span class="octicon octicon-link"></span></a>Extending <code>TaskInterface</code>
+</h3>
+
+<p>Suggested for reusable tasks, any class extending <code>TaskInterface</code> can be used in a pipe. The only method that needs to be implemented is <code>run($data)</code> which should return, at the very least, its input.</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c"> * This task does absolutely nothing</span></span>
+<span class="pl-s1"><span class="pl-c"> */</span></span>
+<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">UselessTask</span> <span class="pl-k">implements</span> <span class="pl-e">TaskInterface</span> {</span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">run</span>(<span class="pl-smi">$data</span>) {</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$data</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">}</span></pre></div>
+
+<p>The return value of the <code>run()</code> method is passed to the next task in line when it completes and as such is required.</p>
+
+<h3>
+<a id="using-callable" class="anchor" href="#using-callable" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using callable</h3>
+
+<p>The class <code>CallableTask</code> provides a wrapper to callables to be used as tasks. Its constructor takes any callable as a parameter, which is then invoked when needed. This is useful when creating tasks with little to no use outside of the current situation.</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$myTask</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">CallableTask</span>(<span class="pl-k">function</span>(<span class="pl-smi">$number</span>) { <span class="pl-k">return</span> <span class="pl-smi">$number</span> <span class="pl-k">+</span> <span class="pl-c1">100</span>; });</span></pre></div>
+
+<h2>
+<a id="creating-pipelines" class="anchor" href="#creating-pipelines" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating Pipelines</h2>
+
+<p>A pipeline is nothing but a ordered list of tasks. There are 2 main ways to add tasks to a pipeline: in its constructor or using the <code>add</code> method on an existing pipeline object. Both of the examples below give the same result:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$pipe</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Pipeline</span>(</span>
+<span class="pl-s1">    <span class="pl-k">new</span> <span class="pl-c1">CallableTask</span>(<span class="pl-k">function</span>(<span class="pl-smi">$x</span>) { <span class="pl-k">return</span> <span class="pl-c1">2</span> <span class="pl-k">*</span> <span class="pl-smi">$x</span>; }),</span>
+<span class="pl-s1">    <span class="pl-k">new</span> <span class="pl-c1">CallableTask</span>(<span class="pl-k">function</span>(<span class="pl-smi">$x</span>) { <span class="pl-k">return</span> <span class="pl-smi">$x</span> <span class="pl-k">-</span> <span class="pl-c1">10</span>; })</span>
+<span class="pl-s1">);</span></pre></div>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$pipe</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Pipeline</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$pipe</span><span class="pl-k">-&gt;</span>add(<span class="pl-k">new</span> <span class="pl-c1">CallableTask</span>(<span class="pl-k">function</span>(<span class="pl-smi">$x</span>) { <span class="pl-k">return</span> <span class="pl-c1">2</span> <span class="pl-k">*</span> <span class="pl-smi">$x</span>; }));</span>
+<span class="pl-s1"><span class="pl-smi">$pipe</span><span class="pl-k">-&gt;</span>add(<span class="pl-k">new</span> <span class="pl-c1">CallableTask</span>(<span class="pl-k">function</span>(<span class="pl-smi">$x</span>) { <span class="pl-k">return</span> <span class="pl-smi">$x</span> <span class="pl-k">-</span> <span class="pl-c1">10</span>; }));</span></pre></div>
+
+<h2>
+<a id="processing" class="anchor" href="#processing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Processing</h2>
+
+<p>Once a pipeline is created, the <code>process()</code> method is used to send data through to be processed by all the tasks.</p>
+
+<h2>
 <a id="basic-usage" class="anchor" href="#basic-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic usage</h2>
 
 <p>Here's a trivial example.</p>
