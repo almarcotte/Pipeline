@@ -1,5 +1,7 @@
 # Pipeline
 
+[![Build Status](https://travis-ci.org/gnumast/Pipeline.svg?branch=master)](https://travis-ci.org/gnumast/Pipeline)
+
 Pipeline allows to easily chain operations / tasks on the fly or create a reusable chain of commands. Complete [documentation](http://gnumast.github.io/Pipeline) is available.
 
 ## Installation
